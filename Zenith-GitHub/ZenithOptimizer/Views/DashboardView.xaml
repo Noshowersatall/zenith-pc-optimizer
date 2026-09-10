@@ -1,0 +1,229 @@
+<UserControl x:Class="Zenith.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer Style="{StaticResource PageScroll}">
+        <StackPanel Margin="0,0,4,32">
+
+            <!-- Header -->
+            <Grid Margin="0,4,0,24">
+                <StackPanel>
+                    <TextBlock x:Name="Greeting" Text="Dashboard" Style="{StaticResource H1}"/>
+                    <TextBlock x:Name="SubGreeting" Text="Here's how your PC is doing right now." Style="{StaticResource Subtitle}"/>
+                </StackPanel>
+                <Button x:Name="OptimizeButton" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                        Padding="24,13" Click="Optimize_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE945;" FontFamily="{StaticResource IconFont}" FontSize="15" VerticalAlignment="Center"/>
+                        <TextBlock Text="Optimize now" Margin="10,0,0,0" FontSize="14.5" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Health + live stats -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="330"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Health score (teal hero card) -->
+                <Border CornerRadius="18" Padding="24" Background="{StaticResource HeroGradient}">
+                    <StackPanel>
+                        <DockPanel>
+                            <Control x:Name="HealthSpinner" DockPanel.Dock="Right" Style="{StaticResource SpinnerSmall}" Width="16" Height="16" Visibility="Collapsed"/>
+                            <TextBlock Text="PC health" Style="{StaticResource H2}" Foreground="White"/>
+                        </DockPanel>
+                        <TextBlock Text="Overall optimization score" FontSize="12" Foreground="#CCFFFFFF" Margin="0,2,0,0"/>
+                        <Grid Width="176" Height="176" Margin="0,18,0,0">
+                            <Ellipse Stroke="#33FFFFFF" StrokeThickness="12"/>
+                            <Ellipse x:Name="ScoreArc" Stroke="White" StrokeThickness="12"
+                                     StrokeDashCap="Round" StrokeDashArray="0 100" Opacity="0" RenderTransformOrigin="0.5,0.5">
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform Angle="-90"/>
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock x:Name="ScoreText" Text="--" FontFamily="{StaticResource DisplayFont}" FontSize="48" FontWeight="Bold"
+                                           HorizontalAlignment="Center" Foreground="White"/>
+                                <Border CornerRadius="8" Background="#26000000" Padding="10,3" HorizontalAlignment="Center" Margin="0,2,0,0">
+                                    <TextBlock x:Name="ScoreLabel" Text="Analyzing…" FontSize="12" FontWeight="SemiBold" Foreground="White"/>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border CornerRadius="14" Background="#1F000000" Padding="16,12" Margin="0,20,0,0">
+                            <StackPanel>
+                                <DockPanel Margin="0,0,0,9">
+                                    <TextBlock x:Name="JunkValue" Text="…" DockPanel.Dock="Right" FontWeight="SemiBold" FontSize="13" Foreground="White"/>
+                                    <TextBlock Text="Junk files" FontSize="13" Foreground="#D9FFFFFF"/>
+                                </DockPanel>
+                                <DockPanel Margin="0,0,0,9">
+                                    <TextBlock x:Name="StartupValue" Text="…" DockPanel.Dock="Right" FontWeight="SemiBold" FontSize="13" Foreground="White"/>
+                                    <TextBlock Text="Startup apps" FontSize="13" Foreground="#D9FFFFFF"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock x:Name="TweaksValue" Text="…" DockPanel.Dock="Right" FontWeight="SemiBold" FontSize="13" Foreground="White"/>
+                                    <TextBlock Text="Optimizations applied" FontSize="13" Foreground="#D9FFFFFF"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Live stats 2x2 -->
+                <Grid Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="16"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <!-- CPU -->
+                    <Border Style="{StaticResource Card}" Padding="20,18">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top">
+                                <TextBlock x:Name="CpuValue" Text="0%" DockPanel.Dock="Right" FontFamily="{StaticResource DisplayFont}" FontSize="24" FontWeight="SemiBold"/>
+                                <StackPanel>
+                                    <TextBlock Text="CPU" FontSize="13" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="CpuSub" Text="" Style="{StaticResource Caption}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                            <Grid x:Name="SparkHost" Margin="0,12,0,0" MinHeight="54" ClipToBounds="True" SizeChanged="SparkHost_SizeChanged">
+                                <Polygon x:Name="SparkFill" Fill="{StaticResource SparkFillBrush}"/>
+                                <Polyline x:Name="Spark" Stroke="{StaticResource HoloGradient}" StrokeThickness="2.5" StrokeLineJoin="Round"/>
+                            </Grid>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Memory -->
+                    <Border Grid.Column="2" Style="{StaticResource Card}" Padding="20,18">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top">
+                                <TextBlock x:Name="RamValue" Text="0%" DockPanel.Dock="Right" FontFamily="{StaticResource DisplayFont}" FontSize="24" FontWeight="SemiBold"/>
+                                <StackPanel>
+                                    <TextBlock Text="Memory" FontSize="13" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="RamSub" Text="" Style="{StaticResource Caption}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                            <StackPanel VerticalAlignment="Bottom" Margin="0,14,0,0">
+                                <ProgressBar x:Name="RamBar" Style="{StaticResource SlimProgress}" Height="8"/>
+                                <Button Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" Padding="12,6" Margin="0,14,0,0" Click="FreeRam_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE9D9;" FontFamily="{StaticResource IconFont}" FontSize="12" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Free up RAM" Margin="8,0,0,0" FontSize="12.5"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Disk -->
+                    <Border Grid.Row="2" Style="{StaticResource Card}" Padding="20,18">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top">
+                                <TextBlock x:Name="DiskValue" Text="0%" DockPanel.Dock="Right" FontFamily="{StaticResource DisplayFont}" FontSize="24" FontWeight="SemiBold"/>
+                                <StackPanel>
+                                    <TextBlock x:Name="DiskTitle" Text="System drive" FontSize="13" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="DiskSub" Text="" Style="{StaticResource Caption}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                            <ProgressBar x:Name="DiskBar" Style="{StaticResource SlimProgress}" Height="8" VerticalAlignment="Bottom" Margin="0,14,0,4"/>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Uptime -->
+                    <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource Card}" Padding="20,18">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top">
+                                <TextBlock x:Name="UptimeValue" Text="0m" DockPanel.Dock="Right" FontFamily="{StaticResource DisplayFont}" FontSize="24" FontWeight="SemiBold"/>
+                                <StackPanel>
+                                    <TextBlock Text="Uptime" FontSize="13" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Since last restart" Style="{StaticResource Caption}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                            <TextBlock x:Name="UptimeHint" Style="{StaticResource ItemDesc}" VerticalAlignment="Bottom" Margin="0,14,0,0"/>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <!-- System info + quick actions -->
+            <Grid Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="330"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Style="{StaticResource Card}" Padding="24,20">
+                    <StackPanel>
+                        <TextBlock Text="Your system" Style="{StaticResource H2}" Margin="0,0,0,14"/>
+                        <Grid x:Name="InfoGrid">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="Windows" Foreground="{StaticResource SubTextBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="1" Text="Processor" Foreground="{StaticResource SubTextBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="2" Text="Graphics" Foreground="{StaticResource SubTextBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="3" Text="Memory" Foreground="{StaticResource SubTextBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="4" Text="Device name" Foreground="{StaticResource SubTextBrush}" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="InfoOs" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                            <TextBlock x:Name="InfoCpu" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                            <TextBlock x:Name="InfoGpu" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                            <TextBlock x:Name="InfoRam" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                            <TextBlock x:Name="InfoName" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Style="{StaticResource Card}" Padding="20">
+                    <StackPanel>
+                        <TextBlock Text="Quick actions" Style="{StaticResource H2}" Margin="0,0,0,12"/>
+                        <Button Style="{StaticResource SecondaryButton}" HorizontalContentAlignment="Stretch" Padding="14,11" Tag="Cleaner" Click="Go_Click">
+                            <DockPanel>
+                                <TextBlock Text="&#xE76C;" DockPanel.Dock="Right" FontFamily="{StaticResource IconFont}" FontSize="11" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Text="&#xE74D;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource CyanBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Text="Clean junk files" Margin="12,0,0,0"/>
+                            </DockPanel>
+                        </Button>
+                        <Button Style="{StaticResource SecondaryButton}" HorizontalContentAlignment="Stretch" Padding="14,11" Margin="0,8,0,0" Tag="Startup Apps" Click="Go_Click">
+                            <DockPanel>
+                                <TextBlock Text="&#xE76C;" DockPanel.Dock="Right" FontFamily="{StaticResource IconFont}" FontSize="11" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Text="&#xE7E8;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource CyanBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Text="Manage startup apps" Margin="12,0,0,0"/>
+                            </DockPanel>
+                        </Button>
+                        <Button Style="{StaticResource SecondaryButton}" HorizontalContentAlignment="Stretch" Padding="14,11" Margin="0,8,0,0" Tag="Performance" Click="Go_Click">
+                            <DockPanel>
+                                <TextBlock Text="&#xE76C;" DockPanel.Dock="Right" FontFamily="{StaticResource IconFont}" FontSize="11" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Text="&#xE945;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource CyanBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Text="Performance tweaks" Margin="12,0,0,0"/>
+                            </DockPanel>
+                        </Button>
+                        <Button Style="{StaticResource SecondaryButton}" HorizontalContentAlignment="Stretch" Padding="14,11" Margin="0,8,0,0" Tag="Debloat" Click="Go_Click">
+                            <DockPanel>
+                                <TextBlock Text="&#xE76C;" DockPanel.Dock="Right" FontFamily="{StaticResource IconFont}" FontSize="11" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Text="&#xE71D;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource CyanBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Text="Remove bloatware" Margin="12,0,0,0"/>
+                            </DockPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

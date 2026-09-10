@@ -1,0 +1,40 @@
+<UserControl x:Class="Zenith.Views.ToolsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer Style="{StaticResource PageScroll}">
+        <StackPanel Margin="0,0,4,32">
+            <StackPanel Margin="0,4,0,24">
+                <TextBlock Text="Tools" Style="{StaticResource H1}"/>
+                <TextBlock Text="Maintenance and repair utilities. Long-running tools open in their own window so you can watch progress." Style="{StaticResource Subtitle}"/>
+            </StackPanel>
+
+            <ItemsControl x:Name="ToolList" Focusable="False">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="2"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource Card}" Margin="0,0,14,14" Padding="22,20">
+                            <DockPanel>
+                                <DockPanel DockPanel.Dock="Bottom" Margin="0,18,0,0" LastChildFill="False">
+                                    <Button DockPanel.Dock="Right" Style="{StaticResource SecondaryButton}" Content="{Binding Action}"
+                                            Tag="{Binding Id}" Click="Run_Click" MinWidth="96"/>
+                                    <TextBlock DockPanel.Dock="Left" Text="{Binding Hint}" Style="{StaticResource Caption}" VerticalAlignment="Center"/>
+                                </DockPanel>
+                                <Border DockPanel.Dock="Left" Style="{StaticResource GlyphTile}" VerticalAlignment="Top">
+                                    <TextBlock Text="{Binding Glyph}" Style="{StaticResource GlyphText}"/>
+                                </Border>
+                                <StackPanel Margin="16,0,0,0">
+                                    <TextBlock Text="{Binding Title}" Style="{StaticResource ItemTitle}"/>
+                                    <TextBlock Text="{Binding Description}" Style="{StaticResource ItemDesc}" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

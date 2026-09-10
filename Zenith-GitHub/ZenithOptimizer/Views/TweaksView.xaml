@@ -1,0 +1,88 @@
+<UserControl x:Class="Zenith.Views.TweaksView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <DataTemplate x:Key="TweakTemplate">
+            <Border Style="{StaticResource Row}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Style="{StaticResource GlyphTile}">
+                        <TextBlock Text="{Binding Glyph}" Style="{StaticResource GlyphText}"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="16,0,20,0" VerticalAlignment="Center">
+                        <WrapPanel>
+                            <TextBlock Text="{Binding Title}" Style="{StaticResource ItemTitle}" Margin="0,0,10,0"/>
+                            <Border Style="{StaticResource Badge}" Background="{StaticResource CyanTintBrush}" Margin="0,0,6,0"
+                                    Visibility="{Binding Recommended, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="Recommended" Style="{StaticResource BadgeText}" Foreground="{StaticResource CyanBrush}"/>
+                            </Border>
+                            <Border Style="{StaticResource Badge}" Background="{StaticResource WarningTintBrush}"
+                                    Visibility="{Binding NeedsRestart, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="Restart" Style="{StaticResource BadgeText}" Foreground="{StaticResource WarningBrush}"/>
+                            </Border>
+                        </WrapPanel>
+                        <TextBlock Text="{Binding Description}" Style="{StaticResource ItemDesc}" Margin="0,4,0,0"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0" Visibility="{Binding HasWarning, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="&#xE7BA;" FontFamily="{StaticResource IconFont}" FontSize="11" Foreground="{StaticResource WarningBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Warning}" FontSize="12" Foreground="{StaticResource WarningBrush}" Margin="6,0,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <Grid Grid.Column="2" VerticalAlignment="Center" Width="44">
+                        <Control Style="{StaticResource SpinnerSmall}" HorizontalAlignment="Center"
+                                 Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"/>
+                        <CheckBox Style="{StaticResource Switch}" IsChecked="{Binding IsOn, Mode=TwoWay}" Click="Toggle_Click"
+                                  Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisInv}}"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ScrollViewer Style="{StaticResource PageScroll}">
+        <StackPanel Margin="0,0,4,32">
+            <!-- Header -->
+            <Grid Margin="0,4,0,20">
+                <StackPanel Margin="0,0,240,0">
+                    <TextBlock x:Name="PageTitle" Style="{StaticResource H1}"/>
+                    <TextBlock x:Name="PageSubtitle" Style="{StaticResource Subtitle}"/>
+                </StackPanel>
+                <Button x:Name="ApplyAllButton" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Click="ApplyRecommended_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE73E;" FontFamily="{StaticResource IconFont}" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Text="Apply recommended" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Progress summary -->
+            <Border Style="{StaticResource Card}" Padding="22,16" Margin="0,0,0,4">
+                <DockPanel>
+                    <Control x:Name="LoadSpinner" DockPanel.Dock="Right" Style="{StaticResource SpinnerSmall}" Visibility="Collapsed"/>
+                    <StackPanel>
+                        <DockPanel>
+                            <TextBlock x:Name="CountText" DockPanel.Dock="Right" FontWeight="SemiBold" FontSize="13" Margin="0,0,16,0"/>
+                            <TextBlock Text="Applied" FontSize="13" Foreground="{StaticResource SubTextBrush}"/>
+                        </DockPanel>
+                        <ProgressBar x:Name="AppliedBar" Style="{StaticResource SlimProgress}" Margin="0,10,16,0"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- Groups -->
+            <ItemsControl x:Name="GroupList" Focusable="False">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" Style="{StaticResource SectionLabel}"/>
+                            <ItemsControl ItemsSource="{Binding Items}" ItemTemplate="{StaticResource TweakTemplate}" Focusable="False"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

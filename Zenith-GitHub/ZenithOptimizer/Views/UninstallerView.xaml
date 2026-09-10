@@ -1,0 +1,56 @@
+<UserControl x:Class="Zenith.Views.UninstallerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel Margin="0,0,4,0">
+        <Grid DockPanel.Dock="Top" Margin="0,4,0,18">
+            <StackPanel Margin="0,0,330,0">
+                <TextBlock Text="Uninstaller" Style="{StaticResource H1}"/>
+                <TextBlock x:Name="Summary" Text="Loading installed programs…" Style="{StaticResource Subtitle}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <RadioButton x:Name="SortName" Style="{StaticResource Pill}" GroupName="AppSort" Content="Name" IsChecked="True" Checked="Sort_Checked"/>
+                <RadioButton x:Name="SortSize" Style="{StaticResource Pill}" GroupName="AppSort" Content="Size" Checked="Sort_Checked"/>
+                <RadioButton x:Name="SortDate" Style="{StaticResource Pill}" GroupName="AppSort" Content="Newest" Checked="Sort_Checked"/>
+            </StackPanel>
+        </Grid>
+
+        <TextBox x:Name="Search" DockPanel.Dock="Top" Style="{StaticResource SearchBox}" Tag="Search programs…" Margin="0,0,0,14" TextChanged="Search_TextChanged"/>
+
+        <Control x:Name="Spinner" DockPanel.Dock="Top" Style="{StaticResource Spinner}" HorizontalAlignment="Left" Margin="4,10,0,0"/>
+
+        <ScrollViewer Style="{StaticResource PageScroll}">
+            <ItemsControl x:Name="AppList" Focusable="False" Margin="0,0,0,24">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource Row}" Padding="14,11" Margin="0,0,0,6">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Width="38" Height="38">
+                                    <Border CornerRadius="10" Background="{StaticResource AccentGradient}">
+                                        <TextBlock Text="{Binding Initial}" Foreground="White" FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <Border CornerRadius="10" Background="{StaticResource RaisedBrush}"
+                                            Visibility="{Binding Source, ElementName=Ico, Converter={StaticResource NullToVis}}">
+                                        <Image x:Name="Ico" Width="26" Height="26" RenderOptions.BitmapScalingMode="HighQuality"
+                                               Source="{Binding IconPath, Converter={StaticResource ExeIcon}}"/>
+                                    </Border>
+                                </Grid>
+                                <StackPanel Grid.Column="1" Margin="14,0,16,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Name}" Style="{StaticResource ItemTitle}"/>
+                                    <TextBlock Text="{Binding Subtitle}" Style="{StaticResource Caption}" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="{Binding SizeText}" FontSize="13.5" FontWeight="SemiBold" VerticalAlignment="Center" MinWidth="80" TextAlignment="Right" Margin="0,0,16,0"/>
+                                <Button Grid.Column="3" Style="{StaticResource SecondaryButton}" Content="Uninstall" Padding="14,7" Click="Uninstall_Click"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

@@ -1,0 +1,63 @@
+<UserControl x:Class="Zenith.Views.BenchmarkView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer Style="{StaticResource PageScroll}">
+        <StackPanel Margin="0,0,4,32">
+            <Grid Margin="0,4,0,24">
+                <StackPanel Margin="0,0,320,0">
+                    <TextBlock Text="Benchmark" Style="{StaticResource H1}"/>
+                    <TextBlock Text="Measure your PC before and after optimizing, so you can see what actually changed. Your first run becomes the baseline." Style="{StaticResource Subtitle}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button x:Name="ResetButton" Style="{StaticResource SecondaryButton}" Content="Set latest as baseline" Click="Reset_Click"/>
+                    <Button x:Name="RunButton" Style="{StaticResource PrimaryButton}" Margin="10,0,0,0" Click="Run_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE768;" FontFamily="{StaticResource IconFont}" FontSize="13" VerticalAlignment="Center"/>
+                            <TextBlock Text="Run benchmark" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <Border Style="{StaticResource Card}" Padding="22,16" Margin="0,0,0,16">
+                <DockPanel>
+                    <TextBlock Text="&#xE946;" DockPanel.Dock="Left" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource CyanBrush}" FontSize="15" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="InfoText" Style="{StaticResource ItemDesc}" Margin="14,0,0,0" VerticalAlignment="Center"
+                               Text="Takes about 30 seconds. Close games and heavy apps first for a fair result. Boot time comes from Windows' own startup log."/>
+                </DockPanel>
+            </Border>
+
+            <ItemsControl x:Name="MetricList" Focusable="False">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="3"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource Card}" Margin="0,0,14,14" Padding="22,18">
+                            <StackPanel>
+                                <DockPanel>
+                                    <Border DockPanel.Dock="Right" Style="{StaticResource Badge}" Background="{Binding DeltaBackground}"
+                                            Visibility="{Binding HasDelta, Converter={StaticResource BoolToVis}}">
+                                        <TextBlock Text="{Binding DeltaText}" Style="{StaticResource BadgeText}" Foreground="{Binding DeltaForeground}"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource SubTextBrush}"/>
+                                </DockPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <TextBlock Text="{Binding LatestText}" FontFamily="{StaticResource DisplayFont}" FontSize="30" FontWeight="SemiBold"
+                                               Foreground="{StaticResource HoloGradient}"/>
+                                    <TextBlock Text="{Binding Unit}" Foreground="{StaticResource SubTextBrush}" FontSize="13" VerticalAlignment="Bottom" Margin="8,0,0,6"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding BaselineText}" Style="{StaticResource Caption}" Margin="0,6,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock x:Name="HistoryLabel" Text="HISTORY" Style="{StaticResource SectionLabel}"/>
+            <TextBlock x:Name="HistoryText" Style="{StaticResource ItemDesc}" Margin="4,0,0,0"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
